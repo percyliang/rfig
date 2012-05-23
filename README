@@ -1,0 +1,151 @@
+rfig version 1.4.7
+Created by Percy Liang
+Last updated 05/23/12
+
+rfig is a package that allows you to create figures or slide presentations by
+programming in Ruby.  The Ruby code generates a Metapost file, which is
+compiled into a PDF file.
+
+Mandatory requirements:
+ - Ruby 1.8 (I test on 1.8.7)
+ - LaTeX2e: pdflatex and context (includes mptopdf)
+Optional:
+ - ImageMagick (for convert if you want to embed PDF files)
+This was tested on Debian Linux.
+
+Quick start
+===========
+Run the following commands from this directory:
+. rc               # Sets environment variables
+examples/simple.rb # Try out a simple example to make sure everything works
+
+You can read (and even compile) the tutorial, which should guide a beginner
+user through the basic features of rfig.
+examples/tutorial.rb
+examples/tutorial.pdf
+
+Architecture
+============
+
+The following describes what the various objects are.
+
+ - Each object that could be drawn is an instance of Obj.  An object could have
+   nested Obj as children.  Subclasses of Obj include Table, Str, Tree,
+   Overlay, etc.
+ - A style specifies how an object should be drawn.  A style includes things
+   like color, scale (to draw objects larger or smaller).
+ - An important part of the style is the set of levels (integers).  This is
+   particularly relevant for slide presentations.  A slide object when printed
+   usually consists of many (PDF) pages.  On the first page, only level 0
+   objects are printed; on the second page, only level 1 objects, etc.
+ - A delta style is an object that modifies the current effective style.  For
+   example, the pause object increments the current level by 1.
+ - Each object has an internal style whose properties are set when it is
+   created.  In addition, some objects (tables, overlays, lists) have external
+   styles (and delta styles) among their children which will be incorporated later.
+ - An object is ``printed'' (with the aid of a FigWriter) to yield a
+   PictureNode, which is a tree of nodes.  Each node has properties, e.g. the
+   levels at which it is shown.
+ - The PictureNodes can be then printed to yield actual figures at different levels.
+ - Printing: act of generating of picture node from an object
+    - When an object prints, it is passed an [initial style] and a writer.
+    - The [internal style] that resides in the object should be incorporated
+      into the initial style (but not overriding it), creating an [effective style]
+    - If the object has children, a [children style] is created based
+      on the effective style, which excludes operations that can be done on the
+      children by the parent (such as scaling, coloring).
+      As the children are processed, [external styles (or delta styles)]
+      are incorporated into the children style.  Children should be printed
+      with the children style.
+    - If the object has auxiliary things (like border of a table),
+      an [auxiliary style] is created for that, which is essentially
+      an independent copy of the children style.
+    - Call initPicNode() to get the initial picture node.
+    - Add children picture nodes.
+    - Call finishPicNode() to apply the effective style and post processors
+      (note that post-processors are called after styles have been applied).
+    - Each style S has a parent; when another style T is incorporated,
+      S's parents may be effected depending on T's persistent setting.
+      Hierarchy of styles (<- means incorporate):
+        initial style
+          effective style <- internal style
+            children style <- external styles
+            auxiliary style
+ - Interface with FigWriter.  The process is as follows:
+    - Objects call methods of the FigWriter to affect its state
+      (in the case of Metapost, the contents of the mp file).
+    - At the same time, picture nodes are generated which refer
+      to the state of the FigWriter (in Metapost, picture IDs).
+    - Finally, the container of the object (a presentation) will
+      call drawPictureNodes() to actually change the state of the FigWriter
+      to reflect that pages were added.  For presentations, we might want to
+      hide various parts of the picture node.  This is called flush printing.
+      For figure sets, this is pretty easy.
+   Intrinsically, printing objects and flush printing are different.
+ - Where does the output go?
+   - An object manager has a global [output prefix].  In addition, when an
+     object gets printed through an object manager, it comes with a local
+     prefix.  Both are optional.  Another setting is whether output is
+     written to separate files.  If no global output prefix is specified,
+     the default is the file name of the ruby program ($0).
+     If no local output prefix is specified, the value used is the object
+     number.  Now, if we want separate files, then the global prefix is the
+     directory and the local prefix forms the file name.  Otherwise, we ignore
+     the local prefix and the global prefix forms the file name.
+ - Variables: each style contains a variable map, which maps a name X (which
+   is a symbol) to something Y (which could be of any type).  When a variable
+   is referenced (in the context of a style S) via its name X, then Y is
+   interpreted.  If Y is a symbol, then it is looked up in the variable map and
+   the result interpreted.  If it is a thunk, then its evaluate()
+   function is called with the style S.
+   When styles are incorporated, the general rule is to interpret reference
+   symbol names as soon as possible.
+
+TODO
+ - clippedpath should draw the (curved) path and then clip, so the directions
+   come out right.
+ - Warning: when we scale or shift using an external style, print object O1
+   that is affected by these styles, and then print out an object O2 whose
+   position and scale depends on O1, then we don't want to apply the scaling
+   and shift again.
+ - Add types to Value class.
+ - Hyperlinks
+ - Better signature detection for lazy printing.
+ - Export to powerpoint and flash.
+ - Animations
+   http://www.fi.muni.cz/~xholecek/tex/pdfanim.xhtml
+   http://www-user.uni-bremen.de/~skupin/pdfanim/Demos/
+ - Graphical user interface.
+ - Constraint-based figure design.
+
+Changes
+=======
+ - 1.4: parse trees support labeled edge mode, changed extractArgs interface
+ - 1.4: bar graphs support error bars and ghosts (for animation)
+ - 1.4: parse tree has postNodeFunc
+ - 1.4: polygon points allows thunks now
+ - 1.4: removed dependence on foiltex
+ - 1.3: allow dashed borders, support for drawing parse trees, general cleanup, etc.
+ - 1.2: graphs: labels support scientific notation, rounding, post processing on lines, etc.
+ - 1.2: support global changing of fontSize
+ - 1.2: Fixed rounding of long numbers, support exporting parts of slides to jpeg (via explode)
+ - 1.2: zoom functionality improved
+ - 1.2: handy functions: indn, padSpace, etc.
+ - 1.1: integrated creation of different editions of slide presentations into Presentation.
+ - 1.1: Simplification: removed ! to denote mustPrint(true) and changed ? to !.
+ - 1.1: Improved error handling and reduced mpto1pdf output.
+
+============================================================
+(C) Copyright 2008-2012, Percy Liang
+
+http://www.cs.berkeley.edu/~pliang
+
+Permission is granted for anyone to copy, use, or modify these programs and
+accompanying documents for purposes of research or education, provided this
+copyright notice is retained, and note is made of any changes that have been
+made.
+
+These programs and documents are distributed without any warranty, express or
+implied.  As the programs were written for research purposes only, they have
+not been tested to the degree that would be advisable in any important
+application.  All use of these programs is entirely at the user's own risk.

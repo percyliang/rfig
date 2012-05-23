@@ -1,0 +1,45 @@
+#!/usr/bin/ruby
+
+require 'general'
+
+# See http://www.pitt.edu/~nisg/cis/web/cgi/rgb.html to visualize colors
+# Generate both a Ruby line and a Latex line
+inPath = "/usr/X11R6/lib/X11/rgb.txt"
+outPath = "Colors.rb"
+
+names = []
+rubyLines = []
+latexLines = []
+hit = {'tan' => true}
+IO.foreach(inPath) { |line|
+  # Keep colors that only have a letter
+  next unless line =~ /^\s*(\d+)\s+(\d+)\s+(\d+)\s+([a-zA-Z]+)([1-4])?$/
+  r, g, b, name, shade = $1.to_i, $2.to_i, $3.to_i, $4.downcase, $5.to_i
+  name += ["", "", "two", "three", "four"][shade]
+  r = roundExcess(r/255.0)
+  g = roundExcess(g/255.0)
+  b = roundExcess(b/255.0)
+  next if hit[name] # Skip these colors
+  hit[name] = true
+  names << name
+  rubyLines << "def #{name}; Value.color(#{r}, #{g}, #{b}) end"
+  latexLines << "\\\\newcommand\\\\#{name}[1]{\\\\textcolor[rgb]{#{r},#{g},#{b}}{#1}}"
+}
+
+out = open(outPath, "w")
+
+rubyLines.each { |line| out.puts line }
+out.puts ""
+
+out.puts '$colors = {'
+out.puts names.map {|name| "  '#{name}' => #{name}"}.join(",\n")
+out.puts '}'
+out.puts 'def lookupColor(colorName); $colors[colorName] or raise "Unknown color: #{colorName}" end;'
+out.puts ""
+
+out.puts "$latexColorDefinitions = <<EOF"
+latexLines.each { |line| out.puts line }
+out.puts "EOF"
+
+out.close
+puts "Wrote #{latexLines.size} colors to #{outPath}"

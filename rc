@@ -1,0 +1,2 @@
+export RFIG_DIR=$PWD
+export RUBYLIB=$RUBYLIB:$RFIG_DIR/lib
