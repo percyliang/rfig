@@ -12,6 +12,7 @@ class ParseTree < Obj
   def verticalCenterEdges(v=true); @verticalCenterEdges = v; self end
   def nodePadding(v); @nodePadding = v; self end
   def postNodeFunc(&f); @postNodeFunc = f; self end # Called with node
+  def postNode2Func(&f); @postNode2Func = f; self end # Called with (original) node, new node
   def postEdgeFunc(&f); @postEdgeFunc = f; self end # Called with edge, parent node, child node, child index
   def edgeLabelFunc(&f); @edgeLabelFunc = f; self end # Called with edge, parent node, child node, child index
   def labeledEdgeMode; @labeledEdgeMode = true; self end
@@ -89,6 +90,7 @@ class ParseTree < Obj
       #puts "recurse: #{nodeChildren.inspect}"
       #puts children.inspect
       @postNodeFunc.call(@toOrig[node]) if @postNodeFunc # Note: doesn't take return value
+      node = @postNode2Func.call(@toOrig[node], node) if @postNode2Func # Does use return value
 
       if children.size > 0 # If there are children, draw them
         ctable(*children.map { |childNodeChildren| recurse.call(childNodeChildren) }).cmargin(@cmargin).postProcessor { |writer,rootObj|
