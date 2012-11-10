@@ -122,14 +122,14 @@ slide!('Overlays',
   'The pivot specifies the relative positions',
   'that should be used to align the objects in the overlay.',
   overlay('0 = 1', hedge.color(red).thickness(2)).pivot(0, 0),
-  staggeredOverlay(true, # True means that old objects disappear
+  stagger(
     'the elements', 'in this', 'overlay should be centered',
-  nil).pivot(0, 0), # (x, y)
+  nil).center, # (x, y)
   cr, pause,
-  staggeredOverlay(true,
+  stagger(
     'whereas the ones', 'here', 'should be right justified',
   nil).pivot(1, 0), # (x, y): -1 = left, 0 = center, +1 = right
-  centeredOverlay(hedge, vedge),
+  overlay(hedge, vedge).center,
 nil) { |slide| slide.label('overlay').signature(8) }
 
 ############################################################
@@ -227,13 +227,13 @@ slide!('Overlays',
     shift(upair(2, 0)), 'a', 'b',
   nil),
   pause,
-  centeredOverlay(
+  overlay(
     'hello',
     pause,
     'bye',
     pause,
     _('bye').shift(upair(1, 0)),
-   nil),
+   nil).center,
    pause,
    'done',
 nil)
@@ -288,7 +288,7 @@ slide!('Drawing pictures and post-processing',
 
     b = obj.postAdd(writer, _('moved right').shift(upair(3, 0)))
 
-    obj.postAdd(writer, centeredOverlay(pause, circle(u(1)).color(red)).shift(b.getPoint(0, 0)))
+    obj.postAdd(writer, overlay(pause, circle(u(1)).color(red)).center.shift(b.getPoint(0, 0)))
 
     obj.postAdd(writer, _('shown early').shift(upair(4, 4)).level(1))
     obj.postAdd(writer, _('shown late').label('b').shift(upair(4, 4)))
@@ -403,7 +403,7 @@ slide!('Tables and graphs',
   center,
   latexTable(data).scale(0.6),
   pause,
-  centeredOverlay(
+  overlay(
     barGraph(data).scale(0.8).postProcessor { |writer,obj|
       obj.postPause
       obj.postAdd(writer, redEncircle(:obj => obj.findPicNode('bar(1,1)').obj))
@@ -417,7 +417,7 @@ slide!('Tables and graphs',
      obj.postAdd(writer,
        overlay(rtable('Interesting', downarrow).ospace.center).pivot(0, -1).shift(p))
    },
-  nil),
+  nil).center,
 nil)
 
 ############################################################
@@ -442,7 +442,7 @@ nil)
 
 slide!('',
   # Doesn't work: should put c on same level as a and b
-  staggeredOverlay(true,
+  stagger(
     'a', 'b', ctable('c', circle(u(4))).center.cNumGhosts(0, 1),
   nil).pivot(-1, +1),
 nil)
@@ -462,7 +462,7 @@ end
 slide!('',
   # Scaling is unexpected
   #f, overlay(f).scale(2),
-  staggeredOverlay(true, 'a', 'b', 'c'),
+  stagger('a', 'b', 'c'),
   pause,
   'd',
 

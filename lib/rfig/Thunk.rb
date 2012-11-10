@@ -32,6 +32,7 @@ def thunk(evalFunc); Thunk.new(evalFunc) end
 
 def tlevel; thunk(lambda {|style| style.getLevel}) end
 def tstartlevel; tlevel.post{|l| l[0] || 0} end
+def tstartlevelplus(v=1); tlevel.post{|l| (l[0] || 0) + v} end
 
 # Return the object specified by the labelPath, which can either be a label or
 # object.

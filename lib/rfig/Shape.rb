@@ -107,8 +107,8 @@ def enshape(options, &modifyShape)
     fillShape.fill.color(white)
     contents << fillShape
   end
-  isNewObj ? centeredOverlay(*(contents+[obj, shape])) :
-             centeredOverlay(*(contents+[shape])).shift(tcenter(obj))
+  isNewObj ? overlay(*(contents+[obj, shape])).center :
+             overlay(*(contents+[shape])).shift(tcenter(obj)).center
              
 end
 

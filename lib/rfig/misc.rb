@@ -68,7 +68,7 @@ def zoom(options)
   bbox = writer.store(rootPic.bbox)
 
   bigPt = smallPicNode.center.add(offset) # Location for big picture node
-  bigPicNode = rootObj.postAdd(writer, centeredOverlay(bigObj).shift(bigPt)) # Draw big node there
+  bigPicNode = rootObj.postAdd(writer, overlay(bigObj).center.shift(bigPt)) # Draw big node there
 
   # Draw small and large boxes
   margin = [smallMargin, bigMargin, bigMargin]
@@ -77,7 +77,7 @@ def zoom(options)
     box = rect(picNode.pic.width.add(margin[i]),
                picNode.pic.height.add(margin[i])).color(color)
     box.fill.color(white) if i == 2
-    box = centeredOverlay(box).shift(picNode.center)
+    box = overlay(box).center.shift(picNode.center)
     box = postFrameFunc.call(box) if postFrameFunc
     box = box.print(writer, auxStyle)
     rootPicNode.appendChild(writer, box)
