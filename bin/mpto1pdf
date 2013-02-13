@@ -46,19 +46,20 @@ mkdir $tmp || exit 1 # Create temporary directory
   # Don't symlink the old file or the log
   rm -f $p.pdf $p-*.pdf $p.log || exit 1
 
+  # Hacks to make mptopdf work
+  scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  mkdir -p $HOME/.texmf-var/web2c
+  cp $scriptDir/mptopdf.fmt $HOME/.texmf-var/web2c
   # Convert to pdf files
   # Stupid mptopdf doesn't return exit code 1 if it fails
   # But ls $p-*.pdf should fail
   if [ $quiet == 1 ]; then
-    mptopdf $p.mp < /dev/null >> $out 2>&1 || exit 1
+    $scriptDir/mptopdf.pl $p.mp < /dev/null >> $out 2>&1 || exit 1
   else
-    mptopdf $p.mp || exit 1
+   ./ mptopdf.pl $p.mp || exit 1
   fi
 
   # Join pdf files
-  #pdftk \
-    #`/bin/ls $p-*.pdf 2>/dev/null | awk -F '-' '{print $NF,$0}' | sort -n | awk '{print $2}'` \
-    #cat output $p.pdf >> $out 2>&1 || exit 1
   $bindir/pdfjoin --outfile $p.pdf \
     `/bin/ls $p-*.pdf 2>/dev/null | awk -F '-' '{print $NF,$0}' | sort -n | awk '{print $2}'` >> $out 2>&1 || exit 1
 
