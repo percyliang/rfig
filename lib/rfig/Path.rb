@@ -89,7 +89,7 @@ class Path < Obj
         Value.path("(fullcircle xscaled #{x} yscaled #{y} shifted #{center})") # HACK
       elsif obj.is_a?(Polygon) # 01/17/09: added this for diamond polygon 
         # Assume that obj.getShape is centered around 0
-        Value.path("(" + obj.getShape + ") shifted (#{center})") # HACK
+        Value.path("(" + obj.getShape(@style) + ") shifted (#{center})") # HACK
       else
         bbox
       end

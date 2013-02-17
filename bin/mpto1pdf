@@ -50,9 +50,9 @@ mkdir $tmp || exit 1 # Create temporary directory
   # Stupid mptopdf doesn't return exit code 1 if it fails
   # But ls $p-*.pdf should fail
   if [ $quiet == 1 ]; then
-    mptopdf $p.mp < /dev/null >> $out 2>&1 || exit 1
+    mptopdf -metafun $p.mp < /dev/null >> $out 2>&1 || exit 1
   else
-    mptopdf $p.mp || exit 1
+    mptopdf -metafun $p.mp || exit 1
   fi
 
   # Join pdf files

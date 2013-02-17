@@ -48,7 +48,7 @@ EOF
     # Need to define width and height as W and H;
     # otherwise metapost thinks lines are too long
     @out.puts <<EOF
-input mp-spec;
+%input mp-spec; % Commented out to make it work on MacOS X
 vardef W(expr p)  = xpart(urcorner p) - xpart(ulcorner p) enddef;
 vardef H(expr p) = ypart(urcorner p) - ypart(lrcorner p) enddef;
 u := 1in;
