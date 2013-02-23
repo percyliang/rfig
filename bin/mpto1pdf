@@ -56,7 +56,7 @@ mkdir $tmp || exit 1 # Create temporary directory
   if [ $quiet == 1 ]; then
     $scriptDir/mptopdf.pl $p.mp < /dev/null >> $out 2>&1 || exit 1
   else
-   ./ mptopdf.pl $p.mp || exit 1
+    $scriptDir/mptopdf.pl $p.mp || exit 1
   fi
 
   # Join pdf files
