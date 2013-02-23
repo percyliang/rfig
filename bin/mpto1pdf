@@ -47,7 +47,7 @@ mkdir $tmp || exit 1 # Create temporary directory
   rm -f $p.pdf $p-*.pdf $p.log || exit 1
 
   # Hacks to make mptopdf work
-  scriptDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  scriptDir="`dirname "$0"`"
   mkdir -p $HOME/.texmf-var/web2c
   cp $scriptDir/mptopdf.fmt $HOME/.texmf-var/web2c
   # Convert to pdf files
