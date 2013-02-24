@@ -13,8 +13,12 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
-# Bug: doesn't work if $0 starts with ../
-bindir=`dirname $0`
+if [ "`echo $( dirname $0 ) | sed -n 's/\/.*//p' | wc -c`" == "1" ]; then
+  bindir=`dirname $0`
+else
+  bindir=$PWD/`dirname $0`
+fi
+
 
 if [ "$1" == "-quiet" ]; then
   quiet=1
@@ -39,24 +43,24 @@ mkdir $tmp || exit 1 # Create temporary directory
   echo "mpto1pdf: writing to $tmp" > $out || exit 1
 
   p=`basename $p`
-  # Link up the files so it looks like we're running in that current directory
+  # Link up the files so it looks like we are running in that current directory
   for x in ../*; do
     ln -sf $x || exit 1
   done
-  # Don't symlink the old file or the log
+  # Do not symlink the old file or the log
   rm -f $p.pdf $p-*.pdf $p.log || exit 1
 
-  # Hacks to make mptopdf work
-  scriptDir="`dirname "$0"`"
-  mkdir -p $HOME/.texmf-var/web2c
-  cp $scriptDir/mptopdf.fmt $HOME/.texmf-var/web2c
+  # Copy fmt file
+  mkdir -p $HOME/.texmf-var/web2c || exit 1
+  cp $bindir/mptopdf.fmt $HOME/.texmf-var/web2c || exit 1
+
   # Convert to pdf files
-  # Stupid mptopdf doesn't return exit code 1 if it fails
+  # Stupid mptopdf does not return exit code 1 if it fails
   # But ls $p-*.pdf should fail
   if [ $quiet == 1 ]; then
-    $scriptDir/mptopdf.pl $p.mp < /dev/null >> $out 2>&1 || exit 1
+    $bindir/mptopdf.pl $p.mp < /dev/null >> $out 2>&1 || exit 1
   else
-    $scriptDir/mptopdf.pl $p.mp || exit 1
+    $bindir/mptopdf.pl $p.mp || exit 1
   fi
 
   # Join pdf files
