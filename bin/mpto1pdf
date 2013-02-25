@@ -13,10 +13,18 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 
+# Try to get the directory the script is running in
 if [ "`echo $( dirname $0 ) | sed -n 's/\/.*//p' | wc -c`" == "1" ]; then
-  bindir=`dirname $0`
+  bindir="`dirname $0`"
+elif [ "$RFIG_DIR" ]; then
+  if [ "`echo "$RFIG_DIR" | sed -n 's/~.*//p' | wc -c`" == "1" ]; then
+    escapedHome="`echo $HOME | sed -e 's/\//\\\\\//g'`"
+    bindir="`echo "$RFIG_DIR" | sed -e "s/~/$escapedHome/g"`/bin"
+  else
+    bindir="$RFIG_DIR/bin"
+  fi
 else
-  bindir=$PWD/`dirname $0`
+  bindir="$PWD/`dirname $0`"
 fi
 
 
