@@ -66,9 +66,9 @@ mkdir $tmp || exit 1 # Create temporary directory
   # Stupid mptopdf does not return exit code 1 if it fails
   # But ls $p-*.pdf should fail
   if [ $quiet == 1 ]; then
-    $bindir/mptopdf.pl $p.mp < /dev/null >> $out 2>&1 || exit 1
+    $bindir/mptopdf.pl -metafun $p.mp < /dev/null >> $out 2>&1 || exit 1
   else
-    $bindir/mptopdf.pl $p.mp || exit 1
+    $bindir/mptopdf.pl -metafun $p.mp || exit 1
   fi
 
   # Join pdf files

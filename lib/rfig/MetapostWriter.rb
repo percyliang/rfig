@@ -10,6 +10,7 @@ class MetapostWriter < FigWriter
   # Right now, if sans-serif, then use foils, otherwise use article
   # (and increase the font size).
   def init(outPrefix, latexHeader, defaultFont, fontSize, verbose)
+    isMac = (/darwin/ =~ RUBY_PLATFORM) != nil
     super(outPrefix, verbose)
     @mpPath = outPrefix+".mp"
 
@@ -47,8 +48,8 @@ EOF
     )
     # Need to define width and height as W and H;
     # otherwise metapost thinks lines are too long
+    if !isMac; @out.puts "input mp-spec;\n"; end
     @out.puts <<EOF
-input mp-spec;
 vardef W(expr p)  = xpart(urcorner p) - xpart(ulcorner p) enddef;
 vardef H(expr p) = ypart(urcorner p) - ypart(lrcorner p) enddef;
 u := 1in;
