@@ -380,6 +380,8 @@ def darkcyan; Value.color(0.0, 0.5451, 0.5451) end
 def darkmagenta; Value.color(0.5451, 0.0, 0.5451) end
 def darkred; Value.color(0.5451, 0.0, 0.0) end
 def lightgreen; Value.color(0.5647, 0.9333, 0.5647) end
+NOCOLOR = Value.color(1.0, 1.0, 1.0)
+def nocolor; NOCOLOR end
 
 $colors = {
   'snow' => snow,
@@ -763,7 +765,8 @@ $colors = {
   'darkcyan' => darkcyan,
   'darkmagenta' => darkmagenta,
   'darkred' => darkred,
-  'lightgreen' => lightgreen
+  'lightgreen' => lightgreen,
+  'nocolor' => nocolor
 }
 def lookupColor(colorName); $colors[colorName] or raise "Unknown color: #{colorName}" end;
 

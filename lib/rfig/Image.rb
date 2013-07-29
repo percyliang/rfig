@@ -38,7 +38,9 @@ class Image < Obj
     # Flaw: we don't keep track of styles applied by the parent,
     # so the externalfigure can't apply the same ones
     initPicNode(writer, style, rectllur(Value.origin, Value.pair(@xsize, @ysize)).color(white))
-    @printedPicNode.imagePath = File.expand_path(@file)
+    if !nocolor.equal?(@style.getColor) then
+      @printedPicNode.imagePath = File.expand_path(@file)
+    end
 
     #@printedPicNode.imageSize = [@xsize, @ysize]
     #placeholderObj = overlay(

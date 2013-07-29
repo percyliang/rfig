@@ -435,6 +435,8 @@ class Table < Obj
   def bgColor(v);                      @tableStyle.bgColor = v;                 self end
   def opaque(v=true);                  @tableStyle.opaque = v;                  self end
 
+  def color(v); @contents.each do |x|  _(x).color(v); end; self; end
+
   # TODO
   def rdivider(v=lambda{|e,r|e});      @tableStyle.rdivider = v; self end
   def cdivider(v=lambda{|e,c|e});      @tableStyle.cdivider = v; self end

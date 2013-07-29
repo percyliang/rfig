@@ -86,6 +86,8 @@ class Overlay < Obj
 
   def center; pivot(0, 0) end
 
+  def color(v); @objs.each do |o| _(o).color(v); end; self; end
+
   def inspect; 'Overlay('+@objs.map{|o| o.inspect}.join(', ')+')' end
 end
 
