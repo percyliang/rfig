@@ -128,7 +128,7 @@ class Slide < Obj
   def rightHeader(v); @slideStyle.rightHeader(v); self end
   def headerScale(v); @slideStyle.headerScale(v); self end
 
-  def slideStyle(v); @slideStyle.incorporate!(v); self end
+  def slideStyle(v); if v then; @slideStyle.incorporate!(v); else; @slideStyle = SlideStyle.new(); end; self end
   def getSlideStyle; @slideStyle end
   def getComments; @comments end
 

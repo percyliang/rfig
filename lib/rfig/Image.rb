@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'rfig/image_size'
 
 class Image < Obj
@@ -17,7 +18,7 @@ class Image < Obj
       # Hack: look at the PDF file to see if these dimensions are actually rotated
       rotate = false
       IO.foreach(file) { |line|
-        if line =~ /^\/Rotate 90/ then
+        if line =~ /^\lRotate 90/ then
           rotate = true
           break
         end

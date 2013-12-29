@@ -7,10 +7,10 @@ $itemizeListStyle = lambda { |depth,index|
   ['$\bullet$', '--'][depth % 2]
 }
 $enumerateListStyle = lambda { |depth,index|
-  ["#{index+1}.", (?a+index).chr+"."][depth % 2]
+  ["#{index.to_i+1}.", (?a.to_i+index).chr+"."][depth % 2]
 }
 $enumerateLetterListStyle = lambda { |depth,index|
-  "("+(?a+index).chr+")"
+  "("+(?a.to_i+index).chr+")"
 }
 
 class Tree < Obj
