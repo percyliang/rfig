@@ -19,10 +19,10 @@ class Style
   def color(v);     @color = v; _assert(v, :color);   self end # Color
   def shift(v);     @shift = v; _assert(v, :pair);    self end # Shift
   def slant(v);     @slant = v;                 self end # Slant
-  def scale(v);     @scale = v;                 self end # Magnification scale
-  def dscale(v);    @scale = v * (@scale||1);   self end # Magnification scale
-  def xscale(v);    @xscale = v;                self end # Magnification scale (x)
-  def yscale(v);    @yscale = v;                self end # Magnification scale (y)
+  def size(v);      @scale = v;                 self end # Magnification scale
+  def scale(v);     @scale = v * (@scale||1);   self end # Magnification scale
+  def xscale(v);    @xscale = v * (@xscale||1); self end # Magnification scale (x)
+  def yscale(v);    @yscale = v * (@yscale||1); self end # Magnification scale (y)
   def rotate(v);    @rotate = v;                self end # Rotation (degrees)
   def bold(v=true); @bold = v;                  self end # Bold
   # If this style is incorporated into another,
